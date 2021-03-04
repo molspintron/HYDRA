@@ -5,7 +5,7 @@ def configureDoxyfile(input_dir, output_dir):
         filedata = file.read()
 
     filedata = filedata.replace('@CMAKE_CURRENT_SOURCE_DIR@/@PROJECT_INCLUDE_DIR@', input_dir)
-    filedata = filedata.replace('@CMAKE_CURRENT_BINARY_DIR@', output_dir)
+    filedata = filedata.replace('@CMAKE_CURRENT_BINARY_DIR@/docs_doxygen', output_dir)
 
     with open('Doxyfile', 'w') as file:
         file.write(filedata)
@@ -20,7 +20,7 @@ if read_the_docs_build:
     output_dir = 'build'
     configureDoxyfile(input_dir, output_dir)
     subprocess.call('doxygen', shell=True)
-    breathe_projects['HYDRA'] = output_dir + '/docs_doxygen/xml'
+    breathe_projects['HYDRA'] = output_dir + '/xml'
     
 # Configuration file for the Sphinx documentation builder.
 #
