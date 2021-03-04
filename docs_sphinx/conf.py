@@ -1,3 +1,27 @@
+import subprocess, os
+
+def configureDoxyfile(input_dir, output_dir):
+    with open('../docs_doxygen/Doxyfile.in', 'r') as file :
+        filedata = file.read()
+
+    filedata = filedata.replace('@CMAKE_CURRENT_SOURCE_DIR@', input_dir)
+    filedata = filedata.replace('@CMAKE_CURRENT_BINARY_DIR@', output_dir)
+
+    with open('../build/Doxyfile.out', 'w') as file:
+        file.write(filedata)
+
+# Check if we're running on Read the Docs' servers
+read_the_docs_build = os.environ.get('READTHEDOCS', None) == 'True'
+
+breathe_projects = {}
+
+if read_the_docs_build:
+    input_dir = '../'
+    output_dir = 'build'
+    configureDoxyfile(input_dir, output_dir)
+    subprocess.call('doxygen', shell=True)
+    breathe_projects['HYDRA'] = output_dir + '/docs_doxygen/xml'
+    
 # Configuration file for the Sphinx documentation builder.
 #
 # This file only contains a selection of the most common options. For a full
