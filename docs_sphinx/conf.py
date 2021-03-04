@@ -4,10 +4,10 @@ def configureDoxyfile(input_dir, output_dir):
     with open('../docs_doxygen/Doxyfile.in', 'r') as file :
         filedata = file.read()
 
-    filedata = filedata.replace('@CMAKE_CURRENT_SOURCE_DIR@', input_dir)
+    filedata = filedata.replace('@CMAKE_CURRENT_SOURCE_DIR@/@PROJECT_INCLUDE_DIR@', input_dir)
     filedata = filedata.replace('@CMAKE_CURRENT_BINARY_DIR@', output_dir)
 
-    with open('../build/Doxyfile.out', 'w') as file:
+    with open('../docs_doxygen/Doxyfile.out', 'w+') as file:
         file.write(filedata)
 
 # Check if we're running on Read the Docs' servers
