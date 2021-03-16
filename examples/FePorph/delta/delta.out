@@ -1,0 +1,39 @@
+--------------------------------------------------------------------------
+[[60045,1],0]: A high-performance Open MPI point-to-point messaging module
+was unable to find any relevant network interfaces:
+
+Module: OpenFabrics (openib)
+  Host: herrmann-ws14
+
+Another transport will be used instead, although this may result in
+lower performance.
+--------------------------------------------------------------------------
+*********************************
+*                               *
+*               HYDRA           *
+*          Version:2.0.0        *
+*                               *
+*********************************
+Basis functions: 427
+Impurity orbitals: 411 - 415
+Energy grid: 1001real axis, 0.02eV steps, 0.1eV smear
+HOMO: -3.88eV
+Diagonalization: on
+Delta unit: eV
+Method for GF: diagonalize bath hamiltonian (NO INVERSION, fast)
+Calculate hybridization of part: on
+Reading basis_array
+Reading coef matrix
+Reading Hamiltonian matrix
+Reading overlap matrix
+Reading eigenvalues
+Time until matrices are read: 1
+Rotated basis
+z^2		xz		yz		xy		x^2-y^2
+ -0.00316874    0.0041752  2.54786e-05    -0.999967  -0.00627937
+    0.703619     -0.71055  -0.00332291  -0.00519541 -0.000178303
+    0.710561     0.703629  -0.00112475  0.000668813   0.00276925
+  0.00191354   0.00202296    0.0164391   0.00628138    -0.999841
+  0.00310633  -0.00160327     0.999859 -9.43074e-05    0.0164415Time used before delta: 1
+Calculate Greensfunctions and Delta
+time: 10

@@ -1,0 +1,39 @@
+Written by Dr. Martin Sebastian Zöllner
+University of Hamburg
+
+Since Turbomole does not directly print out the effective single-particle Hamiltonian (Fock) matrix F, 
+it is constructed indirectly from the Roothaan-Hall equations FC=SCE by reading in the MO coefficients C 
+and eigenvalues e from the mos file (or from alpha/beta for an open-shell calculation).
+The overlap matrix S is then evaluated by the relation
+
+C^\dagger*S*C = 1.
+
+The Hamiltonian matrix F is then calculated by
+
+F = S*C*e*(C)^-1.
+
+-----------------------------------------------------------------------------------------------------
+
+For closed-shell calculation, just compile Roothaan.f03.
+
+For open-shell calculation, just compile Roothaan_openshell.f03.
+
+
+This tool requires lapack and blas.
+
+Compilation
+###########
+
+gfortran Roothaan.f03 -llapack -lblas
+
+or
+
+gfortran Roothaan_openshell.f03 -llapack -lblas
+
+
+Output will be 
+-hamiltonian.1 (and hamiltonian.2 in the open-shell case)
+-overlap (or overlap.1 and overlap.2 in the open-shell case)
+-coef (or coef.1 and coef.2 in the open-shell case)
+-eigenvalues.dat
+

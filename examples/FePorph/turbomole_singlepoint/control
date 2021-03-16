@@ -1,0 +1,77 @@
+$title
+$operating system unix
+$symmetry c1
+$coord    file=coord
+$user-defined bonds    file=coord
+$atoms
+n  1-4                                                                         \
+   basis =n def2-SVP
+c  5-24                                                                        \
+   basis =c def2-SVP
+h  25-36                                                                       \
+   basis =h def2-SVP
+fe 37                                                                          \
+   basis =fe def2-SVP
+$basis    file=basis
+$rundimensions
+   dim(fock,dens)=104820
+   natoms=37
+   nshell=191
+   nbf(CAO)=456
+   nbf(AO)=427
+   dim(trafo[SAO<-->AO/CAO])=514
+   rhfshells=1
+$scfmo   file=mos
+$closed shells
+ a       1-93                                   ( 2 )
+$scfiterlimit       300
+$thize     0.10000000E-04
+$thime        5
+$scfdump
+$scfintunit
+ unit=30       size=0        file=twoint
+$scfdiis
+$maxcor      500
+$scforbitalshift  automatic=.1
+$drvopt
+   cartesian  on
+   basis      off
+   global     off
+   hessian    on
+   dipole     on
+   nuclear polarizability
+$interconversion  off
+   qconv=1.d-7
+   maxiter=25
+$optimize
+   internal   off
+   cartesian  on
+   global     off
+   basis      off   logarithm
+$coordinateupdate
+   dqmax=0.3
+   interpolate  on
+   statistics    5
+$forceupdate
+   ahlrichs numgeo=0  mingeo=3 maxgeo=4 modus=<g|dq> dynamic fail=0.3
+   threig=0.005  reseig=0.005  thrbig=3.0  scale=1.00  damping=0.0
+$forceinit on
+   diag=default
+$energy    file=energy
+$grad    file=gradient
+$forceapprox    file=forceapprox
+$lock off
+$dft
+   functional b3-lyp
+   gridsize   m3
+$scfconv   7
+$scfdamp   start=0.700  step=0.050  min=0.050
+$last step     tm2molden
+$orbital_max_rnorm 0.21412695539306E-04
+$last SCF energy change = -2250.5911
+$charge from dscf
+         -0.000 (not to be modified here)
+$dipole from dscf
+  x     0.00032063473368    y     0.00034721174728    z     0.00130002461473    a.u.
+   | dipole | =    0.0035159397  debye
+$end

@@ -1,0 +1,14 @@
+Small script for printing impurity and bath orbitals.
+Bath orbitals contains all basis functiosn except the impurity
+orbitals.
+
+For bath orbitals: The energies in the molden file can be 
+used to assign a given bath orbital to certain features in 
+the hybridization function.
+
+
+Requires:  molden.input (for Turbomole: ./tm2molden)
+           molden.bath (HYDRA output)
+           molden.impurity (HYDRA output)
+
+
