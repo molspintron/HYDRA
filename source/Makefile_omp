@@ -1,7 +1,7 @@
 .PHONY: all clean cleanup test
 CXX=g++ #for mpi use mpicxx or other mpi compiler for c++
 #use -fopenmp if you want to use omp parallelisation, otherwise delete this option
-CXXFLAGS=-std=c++11 -I /usr/local/include/Eigen/  -Wall -Wunused-parameter -Werror -g -O3 -fopenmp
+CXXFLAGS=-std=c++11 -I /path/to/Eigen/  -Wall -Wunused-parameter -Werror -g -O3 -fopenmp
 OBJECTS=main.o InputOutput.o
 
 all: hydra
