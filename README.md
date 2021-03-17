@@ -1,6 +1,5 @@
 --------------------------------
-Written by Michaela Schneeberger
-University of Hamburg
+HYDRA
 -------------------------------
 
 HYDRA is a tool to compute hybridization functions using atom-centered basis sets.
@@ -17,17 +16,17 @@ Installation
 
 1. Download and unzip the Eigen library (http://eigen.tuxfamily.org/)
 2. Create 'build' directory (mkdir build)
-3a. For omp version:
+3. a) For omp version:
     cp source/main_omp.cpp to ./build/main.cpp and source/Makefile_omp to ./build/Makefile
     To switch off omp, add the option -fopenmp to the compile command in the Makefile. This will result in a serial version.
-3b. Copy source/InputOutput.cpp and source/InputOutput.hpp to ./build
-3c. cd ./build
-3d. Include the path to Eigen library in the Makefile & Edit Makefile according to your systems settings
-3e. type 'make' in folder with Hydra to compile it
-4a. For mpi version:
+3. b) Copy source/InputOutput.cpp and source/InputOutput.hpp to ./build
+3. c) cd ./build
+3. d) Include the path to Eigen library in the Makefile & Edit Makefile according to your systems settings
+3. e) type 'make' in folder with Hydra to compile it
+4. a) For mpi version:
     cd ./build
-4b. cmake -G "Unix Makefiles" ../source
-4c. make all
+4. b) cmake -G "Unix Makefiles" ../source
+4. c) make all
 
 
 ############
@@ -75,9 +74,9 @@ Basically, you just need the required matrices as mentioned above in the exact s
 
 
 
-##########################################################
+##########
 Plotting environment (bath) orbitals and impurity orbitals
-##########################################################
+##########
 
 Hydra outputs 'truncated' molden files. To make them readable by molden,
 it is required to add the 'header' of a full molden file to the truncated
