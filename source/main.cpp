@@ -1,7 +1,6 @@
 /*
             HYDRA
         Version 2.0
-    last edited: 25.01.2021
     Michaela Schneeberger,
     Dr. Philipp Bahlke,
     Prof. Dr. Carmen Herrmann
@@ -25,11 +24,18 @@
 
 #define USAGE\
     std::cerr << "Usage: " << argv[0] << "Execute without arguments in directory with input \
-        (eigenvalues, coef, hamiltonian, overlap, basis_array, delta.global.in)"; \
+        (eigenvalues, coef, hamiltonian, overlap, (basis_array), delta.global.in)"; \
     exit(EXIT_FAILURE);
 
 /**
- * Build and generate energy grid
+ * Build energy grid
+ *
+ * @param points Number of energy points created
+ * @param beta Inverse temperature for Matsubara axis
+ * @param step Step size between point in eV
+ * @param smear Smearing value, imaginary off-set
+ * @param grid_type Type of energy axis (1 = real, 2 = Matsubara)
+ * @return E Array of energy points as complex doubles
  */
 Eigen::ArrayXcd build_Egrid(int points, int beta, float step, float smear, int grid_type)
 {
@@ -50,9 +56,24 @@ Eigen::ArrayXcd build_Egrid(int points, int beta, float step, float smear, int g
     return E;
 }
 
-//From local Greens function gf compute delta_ii = gf_ii - w, 
+/**
+ * Calculate hybridization function delta
+ *
+ * From local Greens function gf compute energy-dependent hybridization function delta_ii at a specific energy point.
+ * The full delta matrix for the impurity is calculated but only diagonal elements are returned and output
+ * at the end. Note that the off-diagonal elements are not necessary 0.
+ *
+ * @param gf The local Greens function
+ * @param ncorrorbs Number of basis functionsimpurity
+ * @param xbf1 First basis function of the impurity
+ * @param over Overlap matrix
+ * @param homo Energy of highest occupied molecular orbital
+ * @param E_point Energy point for which to calculate delta
+ * @param leh 1 = local Greens function calculated by projection on GF in Lehmann representation 0 = direct calculation
+ * @return delta array containing delta_ii(E_point) for corr. orbitals i
+ */
 Eigen::ArrayXcd calc_delta(Eigen::MatrixXcd gf, int ncorrorbs, int xbf1, Eigen::MatrixXd over, double homo, \
-                            std::complex<double> E, int leh)
+                            std::complex<double> E_point, int leh)
 {
     Eigen::MatrixXd S_core;
     Eigen::MatrixXcd gf_sub, gf_sub_inv, Iden, delta_mat;
@@ -66,10 +87,10 @@ Eigen::ArrayXcd calc_delta(Eigen::MatrixXcd gf, int ncorrorbs, int xbf1, Eigen::
     else
         gf_sub = gf.block(xbf1 - 1, xbf1 - 1, ncorrorbs, ncorrorbs);
 
-    //test if inversion was succesfull
     gf_sub_inv = gf_sub.inverse();
-    Iden = gf_sub * gf_sub_inv;
 
+    //test if inversion was succesfull
+    Iden = gf_sub * gf_sub_inv;
     for (int i = 0; i < ncorrorbs; i++) {
         if (1.000 > Iden(i, i).real() && 0.999 < Iden(i, i).real() && 0.00001 > std::abs(Iden(i, i).imag())) {
             std::complex<double> c(1.0, 0.0);
@@ -79,7 +100,7 @@ Eigen::ArrayXcd calc_delta(Eigen::MatrixXcd gf, int ncorrorbs, int xbf1, Eigen::
 
     for (int i = 0; i < ncorrorbs; i++) {
         if (Iden(i, i).real() != 1.0 && std::abs(Iden(i, i).imag()) > 0.0001) {
-            std::cerr << "Inversion error at energy " << E << " for lehmann " << leh << " : (GF*GF^-1)_" \
+            std::cerr << "Inversion error at energy " << E_point << " for lehmann " << leh << " : (GF*GF^-1)_" \
             << i << i << " = " << Iden(i, i);
             exit(EXIT_FAILURE);
         }
@@ -89,13 +110,13 @@ Eigen::ArrayXcd calc_delta(Eigen::MatrixXcd gf, int ncorrorbs, int xbf1, Eigen::
     if (leh == 1) {
         for (int i = 0; i < ncorrorbs; i++) {
             for (int j = 0; j < ncorrorbs; j++) {
-                delta_mat(i, j) = -(gf_sub_inv(i, j) - (std::complex < double > )(E - homo));
+                delta_mat(i, j) = -(gf_sub_inv(i, j) - (std::complex < double > )(E_point - homo));
             }
         }
     } else {
         for (int i = 0; i < ncorrorbs; i++) {
             for (int j = 0; j < ncorrorbs; j++) {
-                delta_mat(i, j) = -(gf_sub_inv(i, j) - (std::complex < double > )((E - homo) * S_core(i, j)));
+                delta_mat(i, j) = -(gf_sub_inv(i, j) - (std::complex < double > )((E_point - homo) * S_core(i, j)));
             }
         }
     }
@@ -107,15 +128,24 @@ Eigen::ArrayXcd calc_delta(Eigen::MatrixXcd gf, int ncorrorbs, int xbf1, Eigen::
     return delta;
 }
 
-//get local Greens function gf by inversion of full Greens function
+/**
+ * Calculate local Greens function gf(E_point) directly by inversion of full Greens function.
+ *
+ * @param Ham_mod Hamilton matrix orthogonalized (and optionally diagonalised)
+ * @param Over_mod Overlap matrix orthogonalized (and optionally diagonalised)
+ * @param nbas Number of basis funnctions in whole system
+ * @param homo Energy of highest occupied molecular orbital
+ * @param E_point Energy point for which to calculate gf
+ * @return gf local Greens function
+ */
 Eigen::MatrixXcd make_direct_GF(Eigen::MatrixXd &Ham_mod, Eigen::MatrixXd &Over_mod, int nbas, double homo, \
-                                std::complex<double> E)
+                                std::complex<double> E_point)
 {
     Eigen::MatrixXcd gf = Eigen::MatrixXcd::Zero(nbas, nbas);
 
     for (int i = 0; i < nbas; i++) {
         for (int j = 0; j < nbas; j++) {
-            gf(i, j) = ((E - homo) * Over_mod(i, j) - Ham_mod(i, j));
+            gf(i, j) = ((E_point - homo) * Over_mod(i, j) - Ham_mod(i, j));
         }
     }
 
@@ -124,7 +154,13 @@ Eigen::MatrixXcd make_direct_GF(Eigen::MatrixXd &Ham_mod, Eigen::MatrixXd &Over_
 
 }
 
-//Loewdin orthogonalization
+/**
+ * Calculate Loewdin orthogonalization matrix for M
+ *
+ * @param M Matrix to be orthogonalized
+ * @param n Size of nxn matrix M
+ * @return X Matrix to Loewdin orthogonalize matrix M
+ */
 Eigen::MatrixXd LoewdinOrtho(Eigen::MatrixXd &M, int n)
 {
     Eigen::SelfAdjointEigenSolver <Eigen::MatrixXd> es(M);
@@ -140,7 +176,18 @@ Eigen::MatrixXd LoewdinOrtho(Eigen::MatrixXd &M, int n)
     return X;
 }
 
-//print orbitals in molden compatible format
+/**
+ * Print orbitals of a subspace (bath or impurity) after diagonalization of Hamiltonian matrix in molden compatible
+ * format
+ *
+ * @param mat Matrix containing eigenvectors of subspace Hamiltonian
+ * @param eig Vector containing eigenvalues of subspace Hamiltonian
+ * @param norbs Number of basis functions of subspace
+ * @param homo Energy of highest occupied MO
+ * @param output 1 = subspace is impurity, else subspace is bath
+ * @param xbf1 Fist basis function of subspace
+ * @param nbas Number of basis functions of whole system
+ */
 void print_orbitals(Eigen::MatrixXd mat, Eigen::VectorXcd eig, int norbs, double homo, int output, int xbf1, int nbas)
 {
     std::ofstream molden;
@@ -179,7 +226,17 @@ void print_orbitals(Eigen::MatrixXd mat, Eigen::VectorXcd eig, int norbs, double
     molden.close();
 }
 
-//diagonalize impurity orbitals, return diagonalization matrix
+/**
+ * Calculate diagonalization matrix to diagonlize impurity orbitals
+ *
+ * @param ham Hamiltonian matrix
+ * @param xbf1 First basis function of impurity
+ * @param norb Number of impurity basis functions
+ * @param homo Energy of highest occupied MO
+ * @param nbas Number of basis functions of whole system
+ * @param mpi MPI rank to generate output only once
+ * @return Diagonalization matrix
+ */
 Eigen::MatrixXd diag_corr_orbs(Eigen::MatrixXd &ham, int xbf1, int norb, double homo, int nbas, int mpi) {
 
     Eigen::MatrixXd trans(nbas, nbas);
@@ -205,7 +262,17 @@ Eigen::MatrixXd diag_corr_orbs(Eigen::MatrixXd &ham, int xbf1, int norb, double 
     return trans;
 }
 
-//diagonalize bath orbitals, return diagonalization matrix
+/**
+ * Calculate diagonalization matrix to diagonalize bath orbitals
+ *
+ * @param xbf1 Fist basis function of impurity
+ * @param xbf2 Last basis function of impurity
+ * @param nbas Number of basis functions in whole system
+ * @param ncorrorbs Number of impurity basis functions
+ * @param Ham_ortho Hamiltonian matrix after orthogonalization (and optional diagonalization)
+ * @param homo Energy of highest occupied MO
+ * @return Diagonalization matrix
+ */
 Eigen::MatrixXd diag_bath_orbs(int xbf1, int xbf2, int nbas, int ncorrorbs, Eigen::MatrixXd &Ham_ortho, double homo)
 {
     Eigen::MatrixXd coup_Trans, block_mat;
@@ -230,7 +297,20 @@ Eigen::MatrixXd diag_bath_orbs(int xbf1, int xbf2, int nbas, int ncorrorbs, Eige
     return coup_Trans;
 }
 
-//build projector
+/**
+ * Build projector for Greens function in Lehmann representation (DOES NOT WORK YET)
+ *
+ * @param Over Overlap matrix
+ * @param Coef Coefficient matrix
+ * @param nbas Number of basis functions in whole system
+ * @param Eig Eigenvalue matrix
+ * @param diag_param 1 = diagonalize impurity, 0 = do not diagonalize impurity
+ * @param xbf1 First basis function of impurity
+ * @param ncorrorbs Number of impurity basis functions
+ * @param  Transformation matrix for orthogonalization (and optional diagonalization)
+ * @param mpi_rank MPI rank
+ * @return Projector matrix
+ */
 Eigen::MatrixXd buildproj(Eigen::MatrixXd &Over, Eigen::MatrixXd Coef, int nbas, Eigen::MatrixXd &Eig, \
                             int diag_param, int xbf1, int ncorrorbs, Eigen::MatrixXd &X, \
                             int mpi_rank) {
@@ -252,17 +332,33 @@ Eigen::MatrixXd buildproj(Eigen::MatrixXd &Over, Eigen::MatrixXd Coef, int nbas,
     return P_C;
 }
 
-//build full Greens function GF in Lehmann representation 
-Eigen::MatrixXcd make_lehmann(Eigen::MatrixXd Eig, int nbas, std::complex<double> E, \
+/**
+ * Build full Greens function GF in Lehmann representation
+ * @param Eig Eigenvalue matrix
+ * @param nbas Number of basis functions in whole system
+ * @param E_point Energy point at which to calculate Greens function
+ * @param homo Energy of highest occupied MO
+ * @return Full Greens function
+ */
+Eigen::MatrixXcd make_lehmann(Eigen::MatrixXd Eig, int nbas, std::complex<double> E_point, \
                                 double homo) {
     Eigen::MatrixXcd GF(nbas, nbas);
     for (int i = 0; i < nbas; ++i) {
-        GF(i, i) = 1.0 / ((E - homo) - Eig(i, i));
+        GF(i, i) = 1.0 / ((E_point - homo) - Eig(i, i));
     }
     return GF;
 }
 
-//get local Greens functin gf by projection on full Greens function GF in Lehmann representation
+/**
+ * Calculate local Greens function gf by projection on full Greens function GF in Lehmann representation
+ * 
+ * @param P_C Projector matrix
+ * @param GF Full Greens function
+ * @param nbas Number of basis functions in whole system
+ * @param xbf1 First basis function of impurity
+ * @param ncorrorbs Number of impurity basis functions
+ * @return local Greens function
+ */
 Eigen::MatrixXcd projection(Eigen::MatrixXd P_C, Eigen::MatrixXcd &GF, int nbas, \
                             int xbf1, int ncorrorbs) {
     Eigen::MatrixXcd gf(nbas, nbas);
