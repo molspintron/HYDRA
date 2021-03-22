@@ -42,7 +42,7 @@ HYDRA requires:
 <br>-MO coefficients    (filename=coef)
 <br>-Basis set indices for local decomposition (filename=basis_array)
 
-delta.global.in looks like the following:
+delta.global.in looks, e.g., as follows:
 
 ------------------------------------------------------------------------------------------------------------
         3000                     ! nbas, total number of basis functions
