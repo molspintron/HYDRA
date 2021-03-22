@@ -19,6 +19,7 @@ Installation
 
 3. For omp version:
    <br>a) cp  source/main_omp.cpp  ./build/main.cpp and cp  source/Makefile_omp  ./build/Makefile 
+
     To switch off omp, add the option -fopenmp to the compile command in the Makefile. This will result in a serial version.
    <br>b) cp source/InputOutput.cpp source/InputOutput.hpp  ./build
    <br>c) cd ./build
