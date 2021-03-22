@@ -118,8 +118,8 @@ Run HYDRA
 
 If all input files are present go to your working directory and run HYDRA::
 
-    $ cd path/to/working/dir
-    $ path/to/build/HYDRA (> output.txt #if you want to save the output)
+    $ cd path_to_working_dir/
+    $ path_to_HYDRA/build/HYDRA (> output.txt #if you want to save the output)
 
 Docs
 ====
