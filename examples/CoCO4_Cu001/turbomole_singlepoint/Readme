@@ -1,0 +1,11 @@
+Co(CO)_4 on a Cu(001) cluster.
+
+SCF calculation without Fermi smearing!
+
+This folder contains the Turbomole control file, 
+the Turbomole output (ridft.out) and all required matrices
+for HYDRA.
+
+The reference Co 3d hybridization function and 
+contributions from the surface and ligands are stored
+in ./references.

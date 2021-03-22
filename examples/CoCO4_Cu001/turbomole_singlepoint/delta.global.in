@@ -1,0 +1,13 @@
+	2964			 ! nbas
+	2948			 ! xbf1
+	2952			 ! xbf2
+	1			 ! 1= real, 2= matsu
+	100			 ! beta
+	1001			 ! points
+	0.02			 ! step size
+	0.1			 ! smear
+	-3.959		 ! E_F
+	1			 ! unit (0 = hartree, 1 = eV)
+	0			 ! diagonalize (true if 1)
+        0                        ! method, 0 = bath, 1 = direct, 2 = projector (not fully implemented yet)
+        1                        ! calculate a decomposition (only for method 0, requiers basis_array input)
