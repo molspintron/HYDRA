@@ -74,7 +74,7 @@ Using HYDRA
 
 To run HYDRA you need to generate the following files in your working directory:
 
-* delta.global.in (Contains the user configuration for HYDRA, see )
+* delta.global.in (Contains the user configuration for HYDRA)
 * overlap (Contains the overlap matrix)
 * hamiltonian (Contains the hamiltonian matrix)
 * eigenvalues (Contains the eigenvalues)
