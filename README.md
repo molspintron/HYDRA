@@ -17,12 +17,16 @@ Installation
 1. Download and unzip the Eigen library (http://eigen.tuxfamily.org/)
 2. Create 'build' directory (mkdir build)
 3. a) For omp version:
-    cp source/main_omp.cpp to ./build/main.cpp and source/Makefile_omp to ./build/Makefile
+    cp  source/main_omp.cpp  ./build/main.cpp 
+    cp  source/Makefile_omp  ./build/Makefile
+
     To switch off omp, add the option -fopenmp to the compile command in the Makefile. This will result in a serial version.
-    <br>b) Copy source/InputOutput.cpp and source/InputOutput.hpp to ./build
+
+    <br>b) cp source/InputOutput.cpp source/InputOutput.hpp  ./build
     <br>c) cd ./build
     <br>d) Include the path to Eigen library in the Makefile & Edit Makefile according to your systems settings
     <br>e) type 'make' in folder with Hydra to compile it
+
 4. a) For mpi version:
     cd ./build
    <br>b) cmake -G "Unix Makefiles" ../source
