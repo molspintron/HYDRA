@@ -3,9 +3,9 @@ HYDRA
 -------------------------------
 
 HYDRA is a tool to compute hybridization functions using atom-centered basis sets.
-It can perform local decompositions of hybridization functions.
+It can perform local decompositions of hybridization functions. A scientific discussion of this decomposition is given in https://doi.org/10.26434/chemrxiv.13655435.v1
 
-The tool was developed by Dr. Marc Philipp Bahlke (in Fortran)
+The tool was developed at University of Hamburg by Dr. Marc Philipp Bahlke (in Fortran)
 and re-written in C++ by Michaela Schneeberger, for an 
 improved performance.
 
@@ -19,14 +19,14 @@ Installation
 3. a) For omp version:
     cp source/main_omp.cpp to ./build/main.cpp and source/Makefile_omp to ./build/Makefile
     To switch off omp, add the option -fopenmp to the compile command in the Makefile. This will result in a serial version.
-3. b) Copy source/InputOutput.cpp and source/InputOutput.hpp to ./build
-3. c) cd ./build
-3. d) Include the path to Eigen library in the Makefile & Edit Makefile according to your systems settings
-3. e) type 'make' in folder with Hydra to compile it
+    <br>b) Copy source/InputOutput.cpp and source/InputOutput.hpp to ./build
+    <br>c) cd ./build
+    <br>d) Include the path to Eigen library in the Makefile & Edit Makefile according to your systems settings
+    <br>e) type 'make' in folder with Hydra to compile it
 4. a) For mpi version:
     cd ./build
-4. b) cmake -G "Unix Makefiles" ../source
-4. c) make all
+   <br>b) cmake -G "Unix Makefiles" ../source
+   <br>c) make all
 
 
 ############
@@ -36,11 +36,11 @@ Usage
 HYDRA requires:
 
 -Input-file         (filename=delta.global.in)
--Overlap matrix     (filename=overlap)
--Hamiltonian matrix (filename=hamiltonian)
--Eigenvalues        (filename=eigenvalues)
--MO coefficients    (filename=coef)
--Basis set indices for local decomposition (filename=basis_array)
+<br>-Overlap matrix     (filename=overlap)
+<br>-Hamiltonian matrix (filename=hamiltonian)
+<br>-Eigenvalues        (filename=eigenvalues)
+<br>-MO coefficients    (filename=coef)
+<br>-Basis set indices for local decomposition (filename=basis_array)
 
 delta.global.in looks like the following:
 
@@ -63,11 +63,11 @@ delta.global.in looks like the following:
 For Turbomole, the required matrices can be obtained by
 a tool which is provided in ./tools/turbomole. It is required
 to remove the file extensions in some cases, according to the
-required files mentioned above. 
+required files mentioned above, e.g.:
 
-E.g. eigenvalues.dat -> eigenvalues
-     hamiltonian.1 -> hamiltonian
-     etc.
+eigenvalues.dat -> eigenvalues
+      <br>hamiltonian.1 -> hamiltonian
+      <br>etc.
 
 Usage for other QC codes:
 Basically, you just need the required matrices as mentioned above in the exact same format (see ./examples).
@@ -78,7 +78,7 @@ Basically, you just need the required matrices as mentioned above in the exact s
 Plotting environment (bath) orbitals and impurity orbitals
 ##########
 
-Hydra outputs 'truncated' molden files. To make them readable by molden,
+Hydra outputs 'truncated' molden files (https://en.wikipedia.org/wiki/Molden). To make them readable by molden,
 it is required to add the 'header' of a full molden file to the truncated
 ones. This can be done by hand or by a python script provided in:
 
