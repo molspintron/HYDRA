@@ -12,6 +12,8 @@ find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 
 
 
+
+
 #message(STATUS "Run: ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} ${MPIEXEC_MAX_NUMPROCS} ${MPIEXEC_PREFLAGS} EXECUTABLE ${MPIEXEC_POSTFLAGS} ARGS")
 
 add_executable(HYDRA main.cpp InputOutput.cpp)
@@ -35,6 +37,12 @@ endif()
 if(OpenMP_CXX_FOUND)
     target_link_libraries(HYDRA OpenMP::OpenMP_CXX)
 endif()
+
+
+
+#[[
+#The following block is for automatically generated documentation and requires installation of
+#Doxygen, Sphinx, Breath and sphinx_rtd_theme
 
 
 # Doxygen
@@ -84,3 +92,4 @@ add_custom_command(OUTPUT ${SPHINX_INDEX}
         MAIN_DEPENDENCY ${SPHINX_CONF}
         COMMENT "Generating documentation with Sphinx")
 add_custom_target(Sphinx ALL DEPENDS ${SPHINX_INDEX})
+]]
