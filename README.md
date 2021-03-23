@@ -26,7 +26,7 @@ Installation
    <br>d) Include the path to Eigen library in the Makefile & Edit Makefile according to your systems settings
    <br>e) type 'make' in folder with Hydra to compile it
 
-4. For mpi version:
+4. For mpi version: (requires installation of Eigen according to INSTALL file in Eigen directory)
    <br>a) cd ./build
    <br>b) cmake -G "Unix Makefiles" ../source
    <br>c) make all
